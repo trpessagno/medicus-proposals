@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Plus, Trash2, Download, FileText, Settings2, Users, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, Download, FileText, Settings2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -123,7 +123,8 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-              <CardContent className="grid grid-cols-1 gap-4">
+            <Card className="border-none shadow-sm rounded-[30px] overflow-hidden">
+              <CardContent className="grid grid-cols-1 gap-4 p-6">
                 {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => {
                   const isActive = data.plans.includes(plan);
                   return (
@@ -136,8 +137,8 @@ export default function Dashboard() {
                         <span className={`text-sm font-semibold uppercase tracking-wider ${isActive ? 'text-[#002d72]' : 'text-slate-500'}`}>{plan}</span>
                         <span className="text-xs text-slate-400 font-medium">{isActive ? 'Plan Seleccionado' : 'Click para incluir'}</span>
                       </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] border-[#0260f9]' : 'border-slate-200'}`}>
-                        {isActive && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] border-[#0260f9]' : 'border-slate-200'}`}>
+                        {isActive && <Plus className="w-5 h-5 text-white rotate-45" />}
                       </div>
                     </div>
                   );
