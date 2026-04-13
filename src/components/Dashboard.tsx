@@ -66,11 +66,11 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen w-full bg-[#f4f7f9] overflow-hidden">
       {/* SIDEBAR CONFIGURATION (40%) */}
-      <div className="w-[40%] h-full border-r bg-white overflow-y-auto p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-10 px-2">
-          <div className="flex items-baseline gap-0.5">
-            <span className="text-[#002d72] text-3xl font-bold tracking-tighter">MEDICUS</span>
-            <span className="w-1.5 h-1.5 bg-[#0260f9] rounded-full ml-1 mb-1.5 animate-pulse"></span>
+      <div className="w-[40%] h-full border-r border-white/5 bg-[#002d72] overflow-y-auto p-8 shadow-2xl z-10">
+        <div className="flex items-center gap-2 mb-12 px-2">
+          <div className="flex items-baseline gap-1">
+            <span className="text-white text-4xl font-extrabold tracking-tighter">MEDICUS</span>
+            <span className="w-2 h-2 bg-[#0260f9] rounded-full animate-pulse"></span>
           </div>
         </div>
 
@@ -84,67 +84,70 @@ export default function Dashboard() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="config" className="space-y-6 animate-in fade-in duration-300">
-            <Card className="border-none shadow-sm rounded-[30px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold uppercase tracking-wider text-slate-500">Datos del Cliente</CardTitle>
+          <TabsContent value="config" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Card className="bg-white/5 border-white/10 shadow-xl rounded-[30px] overflow-hidden backdrop-blur-md">
+              <CardHeader className="pb-4 pt-6 px-6">
+                <CardTitle className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/50">Datos del Cliente</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="clientName">Nombre de la Empresa</Label>
+              <CardContent className="space-y-5 px-6 pb-8">
+                <div className="grid gap-3">
+                  <Label htmlFor="clientName" className="text-white/90 text-sm font-semibold ml-1">Nombre de la Empresa</Label>
                   <Input
                     id="clientName"
                     value={data.clientName}
                     onChange={(e) => updateClientInfo("clientName", e.target.value.toUpperCase())}
                     placeholder="Ej: GRUPO MIRGOR"
-                    className="border-slate-200 focus:border-[#004B8D] focus:ring-[#004B8D]"
+                    className="medicus-input-dark h-12 px-6 text-base"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="date">Mes/Año Cotización</Label>
+                <div className="grid grid-cols-2 gap-5">
+                  <div className="grid gap-3">
+                    <Label htmlFor="date" className="text-white/90 text-sm font-semibold ml-1">Mes/Año</Label>
                     <Input
                       id="date"
                       value={data.date}
                       onChange={(e) => updateClientInfo("date", e.target.value.toUpperCase())}
                       placeholder="Ej: ABRIL 2026"
+                      className="medicus-input-dark h-12 px-6"
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="comp">Competencia Actual</Label>
+                  <div className="grid gap-3">
+                    <Label htmlFor="comp" className="text-white/90 text-sm font-semibold ml-1">Competencia</Label>
                     <Input
                       id="comp"
                       value={data.currentCompetition}
                       onChange={(e) => updateClientInfo("currentCompetition", e.target.value.toUpperCase())}
                       placeholder="Ej: OSDE 210"
+                      className="medicus-input-dark h-12 px-6"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm rounded-[30px] overflow-hidden">
-              <CardContent className="grid grid-cols-1 gap-4 p-6">
+            <div className="space-y-4">
+              <Label className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/50 ml-6">Planes a Cotizar</Label>
+              <div className="grid grid-cols-1 gap-4 px-2">
                 {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => {
                   const isActive = data.plans.includes(plan);
                   return (
                     <div 
                       key={plan} 
                       onClick={() => togglePlanData(plan)}
-                      className={`selection-card p-5 rounded-[24px] flex items-center justify-between ${isActive ? 'selection-card-active' : 'selection-card-inactive'}`}
+                      className={`selection-card p-6 rounded-[30px] flex items-center justify-between border-2 ${isActive ? 'bg-white border-white shadow-2xl shadow-blue-900/40 scale-[1.02]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'}`}
                     >
                       <div className="flex flex-col">
-                        <span className={`text-sm font-semibold uppercase tracking-wider ${isActive ? 'text-[#002d72]' : 'text-slate-500'}`}>{plan}</span>
-                        <span className="text-xs text-slate-400 font-medium">{isActive ? 'Plan Seleccionado' : 'Click para incluir'}</span>
+                        <span className={`text-sm font-extrabold uppercase tracking-widest ${isActive ? 'text-[#002d72]' : 'text-blue-100/80'}`}>{plan}</span>
+                        <span className={`text-xs font-medium ${isActive ? 'text-blue-600' : 'text-blue-100/30'}`}>{isActive ? '✓ Incluido en propuesta' : 'Hacer click para incluir'}</span>
                       </div>
-                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] border-[#0260f9]' : 'border-slate-200'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] shadow-lg shadow-blue-500/50' : 'bg-white/10'}`}>
                         {isActive && <Plus className="w-5 h-5 text-white rotate-45" />}
                       </div>
                     </div>
                   );
                 })}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="pricing" className="space-y-6 animate-in fade-in duration-300">
@@ -204,45 +207,45 @@ export default function Dashboard() {
 
 function PricingEditor({ rows, onChange }: { rows: PricingRow[], onChange: (idx: number, field: keyof PricingRow, val: string) => void }) {
   return (
-    <div className="rounded-md border border-slate-200 overflow-hidden">
+    <div className="rounded-[24px] border border-white/10 overflow-hidden bg-white/5 backdrop-blur-sm">
       <Table>
-        <TableHeader className="bg-slate-50">
-          <TableRow>
-            <TableHead className="w-[100px] text-[11px] font-bold uppercase text-slate-500">Plan</TableHead>
-            <TableHead className="text-[11px] font-bold uppercase text-slate-500">0-26</TableHead>
-            <TableHead className="text-[11px] font-bold uppercase text-slate-500">27-35</TableHead>
-            <TableHead className="text-[11px] font-bold uppercase text-slate-500">36-44</TableHead>
-            <TableHead className="text-[11px] font-bold uppercase text-slate-500">45-64</TableHead>
+        <TableHeader className="bg-white/10">
+          <TableRow className="hover:bg-transparent border-white/10">
+            <TableHead className="w-[100px] text-[10px] font-black uppercase text-blue-200/50 px-4">Plan</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">0-26</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">27-35</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">36-44</TableHead>
+            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right pr-4">45-64</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((row, idx) => (
-            <TableRow key={idx}>
-              <TableCell className="font-semibold text-xs text-slate-700 bg-slate-50/50">{row.plan}</TableCell>
+            <TableRow key={idx} className="border-white/5 hover:bg-white/5 transition-colors group">
+              <TableCell className="font-bold text-xs text-white/90 px-4 group-hover:text-[#0260f9]">{row.plan}</TableCell>
               <TableCell className="p-1">
                 <Input
-                  className="h-8 text-xs border-transparent hover:border-slate-200 focus:border-[#004B8D] p-1 text-right"
+                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
                   value={row.age0_26}
                   onChange={(e) => onChange(idx, "age0_26", e.target.value)}
                 />
               </TableCell>
               <TableCell className="p-1">
                 <Input
-                  className="h-8 text-xs border-transparent hover:border-slate-200 focus:border-[#004B8D] p-1 text-right"
+                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
                   value={row.age27_35}
                   onChange={(e) => onChange(idx, "age27_35", e.target.value)}
                 />
               </TableCell>
               <TableCell className="p-1">
                 <Input
-                  className="h-8 text-xs border-transparent hover:border-slate-200 focus:border-[#004B8D] p-1 text-right"
+                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
                   value={row.age36_44}
                   onChange={(e) => onChange(idx, "age36_44", e.target.value)}
                 />
               </TableCell>
-              <TableCell className="p-1">
+              <TableCell className="p-1 pr-4">
                 <Input
-                  className="h-8 text-xs border-transparent hover:border-slate-200 focus:border-[#004B8D] p-1 text-right"
+                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
                   value={row.age45_64}
                   onChange={(e) => onChange(idx, "age45_64", e.target.value)}
                 />

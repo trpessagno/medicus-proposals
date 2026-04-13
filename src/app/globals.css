@@ -98,18 +98,21 @@
 /* Custom Medicus UI */
 @layer components {
   .tabs-capsule-list {
-    @apply bg-slate-100/80 p-1.5 rounded-full inline-flex border border-slate-200/50;
+    @apply bg-slate-100/10 p-1.5 rounded-full inline-flex border border-white/10 backdrop-blur-sm;
   }
   .tabs-capsule-trigger {
-    @apply rounded-full px-5 py-2 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:shadow-blue-900/5 text-slate-500 hover:text-slate-800;
+    @apply rounded-full px-5 py-2 text-sm font-semibold transition-all data-[state=active]:bg-white data-[state=active]:text-[#002d72] data-[state=active]:shadow-xl data-[state=active]:shadow-black/20 text-blue-100/70 hover:text-white;
   }
   .selection-card {
-    @apply relative overflow-hidden transition-all duration-300 border-2 cursor-pointer;
+    @apply relative overflow-hidden transition-all duration-300 border-2 cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1;
   }
   .selection-card-active {
-    @apply border-accent-bright bg-blue-50/30 shadow-lg shadow-blue-500/10;
+    @apply border-accent-bright bg-[#eef6ff] shadow-lg shadow-blue-500/20 scale-[1.02];
   }
   .selection-card-inactive {
-    @apply border-transparent bg-white hover:bg-slate-50 hover:shadow-md;
+    @apply border-transparent bg-white hover:bg-slate-50;
+  }
+  .medicus-input-dark {
+    @apply bg-white/5 border-white/10 text-white placeholder:text-blue-100/30 rounded-full focus:bg-white/10 focus:border-blue-400 focus:ring-blue-400 transition-all;
   }
 }
