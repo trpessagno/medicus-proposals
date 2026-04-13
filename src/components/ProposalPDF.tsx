@@ -48,9 +48,9 @@ const styles = StyleSheet.create({
   proposalTag: {
     backgroundColor: "#0260f9",
     color: "#FFFFFF",
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 50,
     fontSize: 12,
     fontWeight: "bold",
     marginTop: 20,
@@ -94,10 +94,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   benefitBlock: {
-    marginBottom: 15,
-    padding: 10,
+    marginBottom: 20,
+    padding: 20,
     backgroundColor: MEDICUS_COLORS.accent,
-    borderRadius: 4,
+    borderRadius: 20,
+    border: 1,
+    borderColor: MEDICUS_COLORS.border,
   },
   benefitTitle: {
     fontSize: 14,

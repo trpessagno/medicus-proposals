@@ -48,29 +48,31 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-accent-bright: var(--accent-bright);
+  --shadow-brand: var(--shadow-brand);
 }
 
 :root {
-  --background: #f4f7f9;
-  --foreground: #1a1a1a;
+  --background: #f8fafc;
+  --foreground: #002d72;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #002d72;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --popover-foreground: #002d72;
   --primary: #002d72;
   --primary-foreground: #ffffff;
   --secondary: #4da6ff;
   --secondary-foreground: #002d72;
-  --muted: #e5e9ed;
-  --muted-foreground: #64748b;
-  --accent: #eef2f6;
+  --muted: #f2f6f9;
+  --muted-foreground: #5a7184;
+  --accent: #f2f6f9;
   --accent-foreground: #002d72;
   --destructive: #ef4444;
   --border: #e2e8f0;
-  --input: #e2e8f0;
+  --input: #f8fafc;
   --ring: #002d72;
   --accent-bright: #0260f9;
-  --radius: 1.5rem; /* 24px per cards official look */
+  --radius: 1.875rem; /* 30px per official Medicus look */
+  --shadow-brand: 0 20px 40px -10px rgba(0, 45, 114, 0.08);
 }
 
 .dark {

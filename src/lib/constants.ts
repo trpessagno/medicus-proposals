@@ -20,9 +20,9 @@ export const MOCK_DATA: ProposalData = {
 export const MEDICUS_COLORS = {
   primary: "#002d72", // Official Medicus Deep Blue
   secondary: "#0260f9", // Official Medicus Digital Blue
-  accent: "#f4f7f9", // Very light grey/blue background
-  text: "#1a1a1a",
-  lightText: "#64748b",
+  accent: "#f2f6f9", // Brand light gray/blue background
+  text: "#002d72",
+  lightText: "#5a7184", // Brand muted text
   white: "#FFFFFF",
   border: "#e2e8f0"
 };

@@ -86,39 +86,39 @@ export default function Dashboard() {
 
           <TabsContent value="config" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <Card className="bg-white/5 border-white/10 shadow-xl rounded-[30px] overflow-hidden backdrop-blur-md">
-              <CardHeader className="pb-4 pt-6 px-6">
-                <CardTitle className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/50">Datos del Cliente</CardTitle>
+              <CardHeader className="pb-6 pt-10 px-10">
+                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-100/40">Datos del Cliente</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5 px-6 pb-8">
-                <div className="grid gap-3">
-                  <Label htmlFor="clientName" className="text-white/90 text-sm font-semibold ml-1">Nombre de la Empresa</Label>
+              <CardContent className="space-y-8 px-10 pb-12">
+                <div className="grid gap-4">
+                  <Label htmlFor="clientName" className="text-white/90 text-sm font-semibold ml-2">Nombre de la Empresa</Label>
                   <Input
                     id="clientName"
                     value={data.clientName}
                     onChange={(e) => updateClientInfo("clientName", e.target.value.toUpperCase())}
                     placeholder="Ej: GRUPO MIRGOR"
-                    className="medicus-input-dark h-12 px-6 text-base"
+                    className="medicus-input-dark h-14 px-8 text-base border-white/20 focus:bg-white/20"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-5">
-                  <div className="grid gap-3">
-                    <Label htmlFor="date" className="text-white/90 text-sm font-semibold ml-1">Mes/Año</Label>
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="grid gap-4">
+                    <Label htmlFor="date" className="text-white/90 text-sm font-semibold ml-2">Mes/Año</Label>
                     <Input
                       id="date"
                       value={data.date}
                       onChange={(e) => updateClientInfo("date", e.target.value.toUpperCase())}
                       placeholder="Ej: ABRIL 2026"
-                      className="medicus-input-dark h-12 px-6"
+                      className="medicus-input-dark h-14 px-8"
                     />
                   </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="comp" className="text-white/90 text-sm font-semibold ml-1">Competencia</Label>
+                  <div className="grid gap-4">
+                    <Label htmlFor="comp" className="text-white/90 text-sm font-semibold ml-2">Competencia</Label>
                     <Input
                       id="comp"
                       value={data.currentCompetition}
                       onChange={(e) => updateClientInfo("currentCompetition", e.target.value.toUpperCase())}
                       placeholder="Ej: OSDE 210"
-                      className="medicus-input-dark h-12 px-6"
+                      className="medicus-input-dark h-14 px-8"
                     />
                   </div>
                 </div>
@@ -134,14 +134,14 @@ export default function Dashboard() {
                     <div 
                       key={plan} 
                       onClick={() => togglePlanData(plan)}
-                      className={`selection-card p-6 rounded-[30px] flex items-center justify-between border-2 ${isActive ? 'bg-white border-white shadow-2xl shadow-blue-900/40 scale-[1.02]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'}`}
+                      className={`selection-card p-8 rounded-[30px] flex items-center justify-between border-2 ${isActive ? 'bg-white border-white shadow-brand scale-[1.02]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'}`}
                     >
                       <div className="flex flex-col">
-                        <span className={`text-sm font-extrabold uppercase tracking-widest ${isActive ? 'text-[#002d72]' : 'text-blue-100/80'}`}>{plan}</span>
-                        <span className={`text-xs font-medium ${isActive ? 'text-blue-600' : 'text-blue-100/30'}`}>{isActive ? '✓ Incluido en propuesta' : 'Hacer click para incluir'}</span>
+                        <span className={`text-lg font-[900] uppercase tracking-tighter ${isActive ? 'text-[#002d72]' : 'text-blue-100/80'}`}>{plan}</span>
+                        <span className={`text-[10px] uppercase font-bold tracking-widest mt-1 ${isActive ? 'text-blue-500' : 'text-blue-100/30'}`}>{isActive ? '✓ Seleccionado' : 'Sin incluir'}</span>
                       </div>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] shadow-lg shadow-blue-500/50' : 'bg-white/10'}`}>
-                        {isActive && <Plus className="w-5 h-5 text-white rotate-45" />}
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] shadow-lg shadow-blue-500/50' : 'bg-white/10'}`}>
+                        {isActive && <Plus className="w-6 h-6 text-white rotate-45" />}
                       </div>
                     </div>
                   );
@@ -184,9 +184,9 @@ export default function Dashboard() {
              <span className="flex h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
              <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-widest">Vista Previa en Tiempo Real</h2>
           </div>
-          <div className="bg-white p-1.5 rounded-full border border-slate-200 shadow-sm">
-             <Button variant="default" className="bg-[#0260f9] hover:bg-[#002d72] text-white rounded-full px-8 flex gap-2 h-11 font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20">
-               <Download className="w-4 h-4" /> GENERAR PDF
+          <div className="bg-white p-2 rounded-full border border-slate-200 shadow-brand">
+             <Button variant="default" className="bg-[#0260f9] hover:bg-[#002d72] text-white rounded-full px-10 flex gap-3 h-14 font-extrabold text-sm transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-blue-500/20">
+               <Download className="w-5 h-5" /> GENERAR PROPUESTA PDF
              </Button>
           </div>
         </div>
