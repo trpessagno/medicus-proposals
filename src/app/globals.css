@@ -47,6 +47,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --color-accent-bright: var(--accent-bright);
 }
 
 :root {
@@ -68,6 +69,7 @@
   --border: #e2e8f0;
   --input: #e2e8f0;
   --ring: #002d72;
+  --accent-bright: #0260f9;
   --radius: 1.5rem; /* 24px per cards official look */
 }
 
@@ -90,5 +92,24 @@
   }
   html {
     @apply scroll-smooth;
+  }
+}
+
+/* Custom Medicus UI */
+@layer components {
+  .tabs-capsule-list {
+    @apply bg-slate-100/80 p-1.5 rounded-full inline-flex border border-slate-200/50;
+  }
+  .tabs-capsule-trigger {
+    @apply rounded-full px-5 py-2 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm data-[state=active]:shadow-blue-900/5 text-slate-500 hover:text-slate-800;
+  }
+  .selection-card {
+    @apply relative overflow-hidden transition-all duration-300 border-2 cursor-pointer;
+  }
+  .selection-card-active {
+    @apply border-accent-bright bg-blue-50/30 shadow-lg shadow-blue-500/10;
+  }
+  .selection-card-inactive {
+    @apply border-transparent bg-white hover:bg-slate-50 hover:shadow-md;
   }
 }

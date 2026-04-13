@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Plus, Trash2, Download, FileText, Settings2, Users } from "lucide-react";
+import { Plus, Trash2, Download, FileText, Settings2, Users, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,22 +67,19 @@ export default function Dashboard() {
     <div className="flex h-screen w-full bg-[#f4f7f9] overflow-hidden">
       {/* SIDEBAR CONFIGURATION (40%) */}
       <div className="w-[40%] h-full border-r bg-white overflow-y-auto p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-12 h-12 bg-[#002d72] rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20">
-            <FileText className="text-white w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900 leading-tight">Medicus Proposal</h1>
-            <p className="text-xs text-slate-500 font-medium tracking-wide">GENERADOR DE COTIZACIONES</p>
+        <div className="flex items-center gap-2 mb-10 px-2">
+          <div className="flex items-baseline gap-0.5">
+            <span className="text-[#002d72] text-3xl font-bold tracking-tighter">MEDICUS</span>
+            <span className="w-1.5 h-1.5 bg-[#0260f9] rounded-full ml-1 mb-1.5 animate-pulse"></span>
           </div>
         </div>
 
         <Tabs defaultValue="config" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="config" className="flex gap-2">
+          <TabsList className="tabs-capsule-list mb-8 ml-2">
+            <TabsTrigger value="config" className="tabs-capsule-trigger gap-2">
               <Settings2 className="w-4 h-4" /> Configuración
             </TabsTrigger>
-            <TabsTrigger value="pricing" className="flex gap-2">
+            <TabsTrigger value="pricing" className="tabs-capsule-trigger gap-2">
               <Users className="w-4 h-4" /> Matriz de Precios
             </TabsTrigger>
           </TabsList>
@@ -126,22 +123,25 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm rounded-[30px]">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold uppercase tracking-wider text-slate-500">Planes a Cotizar</CardTitle>
-                <CardDescription>Selecciona los planes que incluirá el comparativo</CardDescription>
-              </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-2">
-                {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => (
-                  <div key={plan} className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                    <Checkbox
-                      id={plan}
-                      checked={data.plans.includes(plan)}
-                      onCheckedChange={() => togglePlanData(plan)}
-                    />
-                    <Label htmlFor={plan} className="flex-1 font-medium cursor-pointer text-slate-700">{plan}</Label>
-                  </div>
-                ))}
+              <CardContent className="grid grid-cols-1 gap-4">
+                {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => {
+                  const isActive = data.plans.includes(plan);
+                  return (
+                    <div 
+                      key={plan} 
+                      onClick={() => togglePlanData(plan)}
+                      className={`selection-card p-5 rounded-[24px] flex items-center justify-between ${isActive ? 'selection-card-active' : 'selection-card-inactive'}`}
+                    >
+                      <div className="flex flex-col">
+                        <span className={`text-sm font-semibold uppercase tracking-wider ${isActive ? 'text-[#002d72]' : 'text-slate-500'}`}>{plan}</span>
+                        <span className="text-xs text-slate-400 font-medium">{isActive ? 'Plan Seleccionado' : 'Click para incluir'}</span>
+                      </div>
+                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] border-[#0260f9]' : 'border-slate-200'}`}>
+                        {isActive && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      </div>
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           </TabsContent>
@@ -181,8 +181,8 @@ export default function Dashboard() {
              <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-widest">Vista Previa en Tiempo Real</h2>
           </div>
           <div className="bg-white p-1.5 rounded-full border border-slate-200 shadow-sm">
-             <Button variant="default" className="bg-[#002d72] hover:bg-[#001a4d] text-white rounded-full px-6 flex gap-2 h-10 font-semibold transition-all hover:scale-105 active:scale-95 shadow-md">
-               <Download className="w-4 h-4" /> Generar Propuesta PDF
+             <Button variant="default" className="bg-[#0260f9] hover:bg-[#002d72] text-white rounded-full px-8 flex gap-2 h-11 font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/20">
+               <Download className="w-4 h-4" /> GENERAR PDF
              </Button>
           </div>
         </div>

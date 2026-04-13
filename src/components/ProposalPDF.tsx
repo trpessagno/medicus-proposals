@@ -43,9 +43,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
   },
   logoText: {
-    color: MEDICUS_COLORS.primary,
-    fontSize: 24,
+    color: "#002d72",
+    fontSize: 28,
     fontWeight: "bold",
+    letterSpacing: -1,
+  },
+  proposalTag: {
+    backgroundColor: "#0260f9",
+    color: "#FFFFFF",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    fontSize: 10,
+    fontWeight: "bold",
+    marginTop: 10,
+    textTransform: "uppercase",
   },
   coverTitle: {
     fontSize: 40,
