@@ -64,11 +64,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#f8f9fc] overflow-hidden">
+    <div className="flex h-screen w-full bg-[#f4f7f9] overflow-hidden">
       {/* SIDEBAR CONFIGURATION (40%) */}
       <div className="w-[40%] h-full border-r bg-white overflow-y-auto p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-8">
-          <div className="w-10 h-10 bg-[#004B8D] rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-[#002d72] rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20">
             <FileText className="text-white w-6 h-6" />
           </div>
           <div>
@@ -88,7 +88,7 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="config" className="space-y-6 animate-in fade-in duration-300">
-            <Card className="border-slate-200">
+            <Card className="border-none shadow-sm rounded-[30px]">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-semibold uppercase tracking-wider text-slate-500">Datos del Cliente</CardTitle>
               </CardHeader>
@@ -126,14 +126,14 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200">
+            <Card className="border-none shadow-sm rounded-[30px]">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-semibold uppercase tracking-wider text-slate-500">Planes a Cotizar</CardTitle>
                 <CardDescription>Selecciona los planes que incluirá el comparativo</CardDescription>
               </CardHeader>
-              <CardContent className="grid grid-cols-1 gap-3">
+              <CardContent className="grid grid-cols-1 gap-2">
                 {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => (
-                  <div key={plan} className="flex items-center space-x-3 p-2 rounded-md hover:bg-slate-50 transition-colors">
+                  <div key={plan} className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                     <Checkbox
                       id={plan}
                       checked={data.plans.includes(plan)}
@@ -180,14 +180,14 @@ export default function Dashboard() {
              <span className="flex h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
              <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-widest">Vista Previa en Tiempo Real</h2>
           </div>
-          <div className="bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-             <Button variant="default" className="bg-[#004B8D] hover:bg-[#003B70] text-white flex gap-2 h-9">
+          <div className="bg-white p-1.5 rounded-full border border-slate-200 shadow-sm">
+             <Button variant="default" className="bg-[#002d72] hover:bg-[#001a4d] text-white rounded-full px-6 flex gap-2 h-10 font-semibold transition-all hover:scale-105 active:scale-95 shadow-md">
                <Download className="w-4 h-4" /> Generar Propuesta PDF
              </Button>
           </div>
         </div>
 
-        <div className="flex-1 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden relative group text-center flex flex-col items-center justify-center">
+        <div className="flex-1 bg-white rounded-[40px] shadow-2xl border border-slate-200/50 overflow-hidden relative group text-center flex flex-col items-center justify-center">
            {mounted ? (
              <PDFViewer className="w-full h-full border-none">
                <ProposalPDF data={debouncedData} />

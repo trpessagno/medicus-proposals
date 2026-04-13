@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
-    padding: 40,
+    padding: 50,
     fontFamily: "Helvetica",
   },
   coverPage: {
@@ -31,13 +31,16 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   logoPlaceholder: {
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     backgroundColor: "#FFFFFF",
-    borderRadius: 75,
+    borderRadius: 65,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 40,
+    shadowColor: "#000000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
   },
   logoText: {
     color: MEDICUS_COLORS.primary,
