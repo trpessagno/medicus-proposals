@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MOCK_DATA, MEDICUS_COLORS } from "../lib/constants";
 import { ProposalData, PlanType, PricingRow } from "../lib/types";
+import ProposalPDF from "./ProposalPDF";
 
 // Dynamic import for PDFViewer to avoid SSR issues
 const PDFViewer = dynamic(
@@ -19,11 +20,14 @@ const PDFViewer = dynamic(
   { ssr: false, loading: () => <div className="flex h-full items-center justify-center bg-gray-100 italic">Cargando Previsualización...</div> }
 );
 
-const ProposalPDF = dynamic(() => import("./ProposalPDF"), { ssr: false });
-
 export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
   const [data, setData] = useState<ProposalData>(MOCK_DATA);
   const [debouncedData, setDebouncedData] = useState<ProposalData>(MOCK_DATA);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Debounce effect to avoid lag in PDF generation
   useEffect(() => {
@@ -183,10 +187,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex-1 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden relative group">
-           <PDFViewer className="w-full h-full border-none">
-             <ProposalPDF data={debouncedData} />
-           </PDFViewer>
+        <div className="flex-1 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden relative group text-center flex flex-col items-center justify-center">
+           {mounted ? (
+             <PDFViewer className="w-full h-full border-none">
+               <ProposalPDF data={debouncedData} />
+             </PDFViewer>
+           ) : (
+             <div className="text-slate-400 italic">Inicializando visor...</div>
+           )}
         </div>
       </div>
     </div>
