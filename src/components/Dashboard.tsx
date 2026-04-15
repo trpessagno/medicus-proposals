@@ -2,34 +2,42 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Plus, Trash2, Download, FileText, Settings2, Users } from "lucide-react";
+import { Download, FileText, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MOCK_DATA, MEDICUS_COLORS } from "../lib/constants";
+import { MOCK_DATA } from "../lib/constants";
 import { ProposalData, PlanType, PricingRow } from "../lib/types";
 import ProposalPDF from "./ProposalPDF";
 
-// Dynamic import for PDFViewer to avoid SSR issues
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
   { ssr: false, loading: () => <div className="flex h-full items-center justify-center bg-gray-100 italic">Cargando Previsualización...</div> }
 );
 
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  { ssr: false, loading: () => <Button disabled className="w-full bg-slate-300 text-slate-500 h-[56px] rounded-xl font-black mt-4">Cargando PDF...</Button> }
+);
+
+const PLAN_DESCRIPTIONS: Record<PlanType, string> = {
+  "Integra": "Red de prestadores básica y farmacias.",
+  "Family": "Red de prestadores integral",
+  "Conecta": "Cartilla premium inteligente",
+  "Celeste": "Cartilla extendida y reintegros",
+  "Azul": "Plan premium de alta gama"
+};
+
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "planes">("dashboard");
   const [data, setData] = useState<ProposalData>(MOCK_DATA);
   const [debouncedData, setDebouncedData] = useState<ProposalData>(MOCK_DATA);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Debounce effect to avoid lag in PDF generation
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedData(data);
@@ -64,196 +72,252 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#f4f7f9] overflow-hidden">
-      {/* SIDEBAR CONFIGURATION (40%) */}
-      <div className="w-[40%] h-full border-r border-white/5 bg-[#002d72] overflow-y-auto p-8 shadow-2xl z-10">
-        <div className="flex items-center gap-2 mb-12 px-2">
-          <div className="flex items-baseline gap-1">
-            <span className="text-white text-4xl font-extrabold tracking-tighter">MEDICUS</span>
-            <span className="w-2 h-2 bg-[#0260f9] rounded-full animate-pulse"></span>
+    <div className="flex flex-col h-screen overflow-hidden bg-[#f4f7f9] font-sans">
+      {/* NAVBAR */}
+      <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-10 shrink-0 shadow-sm">
+        <div className="flex items-center gap-10 h-full">
+          <h1 className="text-[#002d72] text-[22px] font-black tracking-tighter">MEDICUS</h1>
+          <div className="flex gap-8 h-full">
+            <button 
+              onClick={() => setActiveTab("dashboard")}
+              className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "dashboard" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            >
+              Dashboard
+            </button>
+            <button 
+              onClick={() => setActiveTab("planes")}
+              className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "planes" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            >
+              Planes
+            </button>
           </div>
         </div>
+        <div className="flex items-center gap-6">
+          <Settings className="w-5 h-5 text-slate-400 cursor-pointer hover:text-slate-600 transition-colors" />
+          <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center overflow-hidden cursor-pointer shadow-md">
+            <User className="w-5 h-5 text-white/80 mt-1" />
+          </div>
+        </div>
+      </div>
 
-        <Tabs defaultValue="config" className="w-full">
-          <TabsList className="tabs-capsule-list mb-8 ml-2">
-            <TabsTrigger value="config" className="tabs-capsule-trigger gap-2">
-              <Settings2 className="w-4 h-4" /> Configuración
-            </TabsTrigger>
-            <TabsTrigger value="pricing" className="tabs-capsule-trigger gap-2">
-              <Users className="w-4 h-4" /> Matriz de Precios
-            </TabsTrigger>
-          </TabsList>
+      {activeTab === "dashboard" && (
+        <div className="flex flex-1 overflow-hidden">
+          {/* LEFT SIDEBAR Opciones */}
+          <div className="w-[420px] lg:w-[480px] h-full bg-[#f4f7f9] overflow-y-auto p-10 flex flex-col relative shrink-0">
+            <h2 className="text-[#002d72] text-[28px] font-black mb-2 tracking-tight leading-tight">Generador de Propuestas B2B</h2>
+            <p className="text-slate-600 text-[13px] mb-10 font-medium">Configure los detalles de la cotización corporativa.</p>
 
-          <TabsContent value="config" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <Card className="bg-white/5 border-white/10 shadow-xl rounded-[30px] overflow-hidden backdrop-blur-md">
-              <CardHeader className="pb-6 pt-10 px-10">
-                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-100/40">Datos del Cliente</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-8 px-10 pb-12">
-                <div className="grid gap-4">
-                  <Label htmlFor="clientName" className="text-white/90 text-sm font-semibold ml-2">Nombre de la Empresa</Label>
-                  <Input
-                    id="clientName"
+            <div className="mb-8 space-y-5">
+              <h3 className="text-[11px] font-black tracking-[0.15em] text-slate-500 uppercase">DATOS DEL CLIENTE</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-slate-700 ml-1">Razón Social</Label>
+                  <Input 
                     value={data.clientName}
-                    onChange={(e) => updateClientInfo("clientName", e.target.value.toUpperCase())}
-                    placeholder="Ej: GRUPO MIRGOR"
-                    className="medicus-input-dark h-14 px-8 text-base border-white/20 focus:bg-white/20"
+                    onChange={(e) => updateClientInfo("clientName", e.target.value)}
+                    className="h-11 bg-white border-slate-200/80 shadow-sm text-sm rounded-lg"
+                    placeholder="Empresa S.A."
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-8">
-                  <div className="grid gap-4">
-                    <Label htmlFor="date" className="text-white/90 text-sm font-semibold ml-2">Mes/Año</Label>
-                    <Input
-                      id="date"
-                      value={data.date}
-                      onChange={(e) => updateClientInfo("date", e.target.value.toUpperCase())}
-                      placeholder="Ej: ABRIL 2026"
-                      className="medicus-input-dark h-14 px-8"
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-700 ml-1">CUIT</Label>
+                    <Input 
+                      value={data.cuit}
+                      onChange={(e) => updateClientInfo("cuit", e.target.value)}
+                      className="h-11 bg-white border-slate-200/80 shadow-sm text-sm rounded-lg"
+                      placeholder="30-00000000-0"
                     />
                   </div>
-                  <div className="grid gap-4">
-                    <Label htmlFor="comp" className="text-white/90 text-sm font-semibold ml-2">Competencia</Label>
-                    <Input
-                      id="comp"
-                      value={data.currentCompetition}
-                      onChange={(e) => updateClientInfo("currentCompetition", e.target.value.toUpperCase())}
-                      placeholder="Ej: OSDE 210"
-                      className="medicus-input-dark h-14 px-8"
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-700 ml-1">Cápitas</Label>
+                    <Input 
+                      value={data.capitas}
+                      onChange={(e) => updateClientInfo("capitas", e.target.value)}
+                      className="h-11 bg-white border-slate-200/80 shadow-sm text-sm rounded-lg"
+                      placeholder="0"
                     />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-700 ml-1">Mes/Año</Label>
+                    <Input 
+                      type="text"
+                      value={data.date}
+                      onChange={(e) => updateClientInfo("date", e.target.value)}
+                      className="h-11 bg-white border-slate-200/80 shadow-sm text-sm rounded-lg block"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-bold text-slate-700 ml-1">Competencia</Label>
+                    <Input 
+                      value={data.currentCompetition}
+                      onChange={(e) => updateClientInfo("currentCompetition", e.target.value)}
+                      className="h-11 bg-white border-slate-200/80 shadow-sm text-sm rounded-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <div className="space-y-4">
-              <Label className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200/50 ml-6">Planes a Cotizar</Label>
-              <div className="grid grid-cols-1 gap-4 px-2">
-                {(["Family R", "Celeste 6", "Azul 4"] as PlanType[]).map((plan) => {
+            <div className="mb-10 space-y-4 flex-1">
+              <h3 className="text-[11px] font-black tracking-[0.15em] text-slate-500 uppercase mt-4">PLANES A COTIZAR</h3>
+              <div className="space-y-3">
+                {(["Integra", "Family", "Conecta", "Celeste", "Azul"] as PlanType[]).map((plan) => {
                   const isActive = data.plans.includes(plan);
+                  // Usar las etiquetas exactas de la imagen para Family, Celeste, Azul
+                  const planLabel = plan === "Family" ? "Family R" : plan === "Celeste" ? "Celeste 6" : plan === "Azul" ? "Azul 4" : plan;
                   return (
                     <div 
-                      key={plan} 
+                      key={plan}
                       onClick={() => togglePlanData(plan)}
-                      className={`selection-card p-8 rounded-[30px] flex items-center justify-between border-2 ${isActive ? 'bg-white border-white shadow-brand scale-[1.02]' : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'}`}
+                      className={`flex items-center p-[18px] rounded-2xl cursor-pointer transition-all border-2 bg-white
+                        ${isActive ? "border-[#0260f9] shadow-sm shadow-blue-500/10" : "border-slate-100 hover:border-slate-200"}
+                      `}
                     >
-                      <div className="flex flex-col">
-                        <span className={`text-lg font-[900] uppercase tracking-tighter ${isActive ? 'text-[#002d72]' : 'text-blue-100/80'}`}>{plan}</span>
-                        <span className={`text-[10px] uppercase font-bold tracking-widest mt-1 ${isActive ? 'text-blue-500' : 'text-blue-100/30'}`}>{isActive ? '✓ Seleccionado' : 'Sin incluir'}</span>
+                      <div className={`w-[22px] h-[22px] rounded-md flex items-center justify-center border-2 mr-4 shrink-0 transition-colors
+                        ${isActive ? "bg-[#002d72] border-[#002d72]" : "border-slate-200 bg-slate-50"}
+                      `}>
+                        {isActive && <div className="w-[10px] h-[10px] bg-white transform translate-y-[-1px]" style={{ clipPath: "polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%)" }} />}
                       </div>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${isActive ? 'bg-[#0260f9] shadow-lg shadow-blue-500/50' : 'bg-white/10'}`}>
-                        {isActive && <Plus className="w-6 h-6 text-white rotate-45" />}
+                      <div className="flex-1 mt-1">
+                        <p className={`font-black text-[15px] leading-tight ${isActive ? "text-[#002d72]" : "text-slate-800"}`}>{planLabel}</p>
+                        <p className="text-[12px] text-slate-500 font-medium leading-normal mt-0.5">{PLAN_DESCRIPTIONS[plan]}</p>
                       </div>
+                      {isActive && (
+                        <div className="text-[#00b0f0] bg-blue-50 p-1.5 rounded-full">
+                          <svg className="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="currentColor">
+                             <circle cx="12" cy="12" r="10" fill="currentColor" className="text-[#00b0f0] opacity-20"/>
+                             <path d="M10.2 14.8L7.4 12l-1.4 1.4 4.2 4.2 8.4-8.4-1.4-1.4z" fill="currentColor"/>
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
             </div>
-          </TabsContent>
 
-          <TabsContent value="pricing" className="space-y-6 animate-in fade-in duration-300">
+            {mounted ? (
+              <PDFDownloadLink
+                document={<ProposalPDF data={debouncedData} />}
+                fileName={`Propuesta_Medicus_${data.clientName.replace(/\s+/g, '_')}.pdf`}
+                className="w-full mt-4"
+              >
+                {({ loading }) => (
+                  <Button className="w-full bg-[#002d72] hover:bg-[#001f4f] text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 transition-transform active:scale-[0.98]">
+                    <FileText className="w-5 h-5 ml-2" /> {loading ? "Generando Documento..." : "Descargar Propuesta PDF"}
+                  </Button>
+                )}
+              </PDFDownloadLink>
+            ) : (
+              <Button disabled className="w-full bg-[#002d72]/50 text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 mt-4">
+                <FileText className="w-5 h-5 ml-2" /> Cargando...
+              </Button>
+            )}
+          </div>
+
+          {/* RIGHT SIDEBAR PDF */}
+          <div className="flex-1 h-full bg-[#111827] flex items-center justify-center shrink-0">
+            <div className="w-full h-full relative group">
+               {mounted ? (
+                 <PDFViewer className="w-full h-full border-none">
+                   <ProposalPDF data={debouncedData} />
+                 </PDFViewer>
+               ) : (
+                 <div className="text-slate-400 italic flex items-center justify-center h-full">Inicializando visor...</div>
+               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "planes" && (
+        <div className="flex-1 p-12 bg-white overflow-y-auto">
+          <div className="max-w-6xl mx-auto space-y-8">
+             <div>
+               <h2 className="text-[#002d72] text-4xl font-black mb-3 tracking-tight">Matriz de Precios</h2>
+               <p className="text-slate-500 text-base font-medium">Edite los precios base (individual o matrimonio) permitidos en cada franja etaria. Estos valores alteran el PDF dinámicamente.</p>
+             </div>
+
              <Tabs defaultValue="individual" className="w-full">
-                <div className="flex items-center justify-between mb-2">
-                   <Label className="text-sm font-semibold uppercase tracking-wider text-slate-500">Ajuste de Precios</Label>
-                   <TabsList className="h-8">
-                      <TabsTrigger value="individual" className="text-xs h-7">Individual</TabsTrigger>
-                      <TabsTrigger value="matrimonio" className="text-xs h-7">Matrimonio</TabsTrigger>
-                   </TabsList>
-                </div>
+                <TabsList className="h-12 mb-8 bg-slate-100/50 p-1 rounded-xl">
+                   <TabsTrigger value="individual" className="text-sm px-10 h-full rounded-lg font-bold data-[state=active]:bg-white data-[state=active]:text-[#002d72] data-[state=active]:shadow-sm">Cápitas Individuales</TabsTrigger>
+                   <TabsTrigger value="matrimonio" className="text-sm px-10 h-full rounded-lg font-bold data-[state=active]:bg-white data-[state=active]:text-[#002d72] data-[state=active]:shadow-sm">Cápitas Matrimonio</TabsTrigger>
+                </TabsList>
 
                 <TabsContent value="individual">
-                  <PricingEditor 
-                    rows={data.pricingIndividual} 
-                    onChange={(idx, field, val) => updatePricingRow("pricingIndividual", idx, field, val)} 
-                  />
+                  <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <PricingEditor 
+                      rows={data.pricingIndividual} 
+                      onChange={(idx, field, val) => updatePricingRow("pricingIndividual", idx, field, val)} 
+                    />
+                  </div>
                 </TabsContent>
                 <TabsContent value="matrimonio">
-                  <PricingEditor 
-                    rows={data.pricingMatrimonio} 
-                    onChange={(idx, field, val) => updatePricingRow("pricingMatrimonio", idx, field, val)} 
-                  />
+                  <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <PricingEditor 
+                      rows={data.pricingMatrimonio} 
+                      onChange={(idx, field, val) => updatePricingRow("pricingMatrimonio", idx, field, val)} 
+                    />
+                  </div>
                 </TabsContent>
              </Tabs>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* PREVIEW PANEL (60%) */}
-      <div className="w-[60%] h-full flex flex-col bg-slate-100 p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-             <span className="flex h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
-             <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-widest">Vista Previa en Tiempo Real</h2>
-          </div>
-          <div className="bg-white p-2 rounded-full border border-slate-200 shadow-brand">
-             <Button variant="default" className="bg-[#0260f9] hover:bg-[#002d72] text-white rounded-full px-10 flex gap-3 h-14 font-extrabold text-sm transition-all hover:scale-[1.03] active:scale-95 shadow-lg shadow-blue-500/20">
-               <Download className="w-5 h-5" /> GENERAR PROPUESTA PDF
-             </Button>
           </div>
         </div>
-
-        <div className="flex-1 bg-white rounded-[40px] shadow-2xl border border-slate-200/50 overflow-hidden relative group text-center flex flex-col items-center justify-center">
-           {mounted ? (
-             <PDFViewer className="w-full h-full border-none">
-               <ProposalPDF data={debouncedData} />
-             </PDFViewer>
-           ) : (
-             <div className="text-slate-400 italic">Inicializando visor...</div>
-           )}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
 
 function PricingEditor({ rows, onChange }: { rows: PricingRow[], onChange: (idx: number, field: keyof PricingRow, val: string) => void }) {
   return (
-    <div className="rounded-[24px] border border-white/10 overflow-hidden bg-white/5 backdrop-blur-sm">
-      <Table>
-        <TableHeader className="bg-white/10">
-          <TableRow className="hover:bg-transparent border-white/10">
-            <TableHead className="w-[100px] text-[10px] font-black uppercase text-blue-200/50 px-4">Plan</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">0-26</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">27-35</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right">36-44</TableHead>
-            <TableHead className="text-[10px] font-black uppercase text-blue-200/50 text-right pr-4">45-64</TableHead>
+    <Table>
+      <TableHeader className="bg-slate-50/50">
+        <TableRow className="hover:bg-transparent border-b border-slate-200 text-slate-500">
+          <TableHead className="w-[180px] text-xs font-black tracking-widest uppercase px-8 py-5">Plan Medicus</TableHead>
+          <TableHead className="text-xs font-black tracking-widest uppercase text-right py-5">Hasta 26 años</TableHead>
+          <TableHead className="text-xs font-black tracking-widest uppercase text-right py-5">27 a 35 años</TableHead>
+          <TableHead className="text-xs font-black tracking-widest uppercase text-right py-5">36 a 44 años</TableHead>
+          <TableHead className="text-xs font-black tracking-widest uppercase text-right py-5 pr-8">45 a 64 años</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row, idx) => (
+          <TableRow key={idx} className="border-b border-slate-100 hover:bg-slate-50/80 transition-colors">
+            <TableCell className="font-extrabold text-[15px] text-[#002d72] px-8 tracking-tight">{row.plan}</TableCell>
+            <TableCell className="p-3">
+              <Input
+                className="h-12 bg-white border-slate-200 focus:border-[#0260f9] focus:ring-1 focus:ring-[#0260f9] text-right font-medium text-slate-700 text-base"
+                value={row.age0_26}
+                onChange={(e) => onChange(idx, "age0_26", e.target.value)}
+              />
+            </TableCell>
+            <TableCell className="p-3">
+              <Input
+                className="h-12 bg-white border-slate-200 focus:border-[#0260f9] focus:ring-1 focus:ring-[#0260f9] text-right font-medium text-slate-700 text-base"
+                value={row.age27_35}
+                onChange={(e) => onChange(idx, "age27_35", e.target.value)}
+              />
+            </TableCell>
+            <TableCell className="p-3">
+              <Input
+                className="h-12 bg-white border-slate-200 focus:border-[#0260f9] focus:ring-1 focus:ring-[#0260f9] text-right font-medium text-slate-700 text-base"
+                value={row.age36_44}
+                onChange={(e) => onChange(idx, "age36_44", e.target.value)}
+              />
+            </TableCell>
+            <TableCell className="p-3 pr-8">
+              <Input
+                className="h-12 bg-white border-slate-200 focus:border-[#0260f9] focus:ring-1 focus:ring-[#0260f9] text-right font-medium text-slate-700 text-base"
+                value={row.age45_64}
+                onChange={(e) => onChange(idx, "age45_64", e.target.value)}
+              />
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row, idx) => (
-            <TableRow key={idx} className="border-white/5 hover:bg-white/5 transition-colors group">
-              <TableCell className="font-bold text-xs text-white/90 px-4 group-hover:text-[#0260f9]">{row.plan}</TableCell>
-              <TableCell className="p-1">
-                <Input
-                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
-                  value={row.age0_26}
-                  onChange={(e) => onChange(idx, "age0_26", e.target.value)}
-                />
-              </TableCell>
-              <TableCell className="p-1">
-                <Input
-                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
-                  value={row.age27_35}
-                  onChange={(e) => onChange(idx, "age27_35", e.target.value)}
-                />
-              </TableCell>
-              <TableCell className="p-1">
-                <Input
-                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
-                  value={row.age36_44}
-                  onChange={(e) => onChange(idx, "age36_44", e.target.value)}
-                />
-              </TableCell>
-              <TableCell className="p-1 pr-4">
-                <Input
-                  className="h-9 text-xs bg-transparent border-transparent hover:border-white/10 focus:bg-white/10 focus:text-white p-2 text-right transition-all font-mono text-blue-100"
-                  value={row.age45_64}
-                  onChange={(e) => onChange(idx, "age45_64", e.target.value)}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

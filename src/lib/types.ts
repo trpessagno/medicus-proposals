@@ -6,10 +6,12 @@ export interface PricingRow {
   age45_64: string;
 }
 
-export type PlanType = "Family R" | "Celeste 6" | "Azul 4";
+export type PlanType = "Integra" | "Family" | "Conecta" | "Azul" | "Celeste";
 
 export interface ProposalData {
   clientName: string;
+  cuit: string;
+  capitas: string;
   date: string;
   currentCompetition: string;
   plans: PlanType[];

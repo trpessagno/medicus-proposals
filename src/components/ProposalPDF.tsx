@@ -7,13 +7,9 @@ import {
   Text,
   View,
   StyleSheet,
-  Font,
-  Image,
 } from "@react-pdf/renderer";
 import { ProposalData } from "../lib/types";
 import { MEDICUS_COLORS } from "../lib/constants";
-
-// Register fonts if needed (using default Helvetica/Times for simplicity in this template)
 
 const styles = StyleSheet.create({
   page: {
@@ -24,56 +20,169 @@ const styles = StyleSheet.create({
   },
   coverPage: {
     flexDirection: "column",
-    backgroundColor: "#002d72",
+    backgroundColor: "#FFFFFF",
+    padding: 50,
+    paddingTop: 60,
+    fontFamily: "Helvetica",
     height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    color: "#FFFFFF",
-    padding: 60,
   },
-  logoPlaceholder: {
-    width: 200,
-    height: 80,
-    backgroundColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center",
+  topBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 60,
   },
+  logoBlock: {
+    flexDirection: "column",
+  },
   logoText: {
-    color: "#FFFFFF",
-    fontSize: 48,
-    fontWeight: "black",
-    letterSpacing: -2,
-  },
-  proposalTag: {
-    backgroundColor: "#0260f9",
-    color: "#FFFFFF",
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 50,
-    fontSize: 12,
-    fontWeight: "bold",
-    marginTop: 20,
-    textTransform: "uppercase",
-  },
-  coverTitle: {
-    fontSize: 52,
-    fontWeight: "black",
-    textAlign: "center",
-    marginTop: 40,
+    color: "#002d72",
+    fontSize: 28,
+    fontWeight: "heavy",
     letterSpacing: -1,
   },
-  coverSubtitle: {
-    fontSize: 18,
-    color: "#e5f1ff",
-    marginTop: 20,
-    fontWeight: "light",
+  logoLine: {
+    height: 4,
+    width: 60,
+    backgroundColor: "#00b0f0",
+    marginTop: 5,
   },
+  topRightText: {
+    textAlign: "right",
+  },
+  refLabel: {
+    fontSize: 8,
+    color: "#002d72",
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  refValue: {
+    fontSize: 8,
+    color: "#5a7184",
+    marginTop: 2,
+  },
+  heroSection: {
+    marginTop: 40,
+    marginBottom: 60,
+  },
+  heroPreTitle: {
+    fontSize: 36,
+    color: "#111827",
+    fontWeight: "bold",
+    letterSpacing: -1,
+  },
+  heroTitle: {
+    fontSize: 42,
+    color: "#002d72",
+    fontWeight: "heavy",
+    fontStyle: "italic",
+    letterSpacing: -1,
+    marginTop: 5,
+  },
+  heroSubtitle: {
+    fontSize: 12,
+    color: "#5a7184",
+    marginTop: 25,
+    lineHeight: 1.6,
+    width: "70%",
+  },
+  dataGrid: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 30,
+    paddingTop: 40,
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+  },
+  dataColLeft: {
+    width: "55%",
+  },
+  dataColRight: {
+    width: "40%",
+  },
+  dataLabel: {
+    fontSize: 8,
+    color: "#002d72",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    marginBottom: 8,
+  },
+  dataValueMain: {
+    fontSize: 16,
+    color: "#111827",
+    fontWeight: "bold",
+  },
+  dataValueSub: {
+    fontSize: 10,
+    color: "#5a7184",
+    marginTop: 4,
+  },
+  investmentCard: {
+    backgroundColor: "#f8fafc",
+    borderRadius: 12,
+    padding: 25,
+    borderWidth: 1,
+    borderColor: "#f1f5f9",
+  },
+  investmentLabel: {
+    fontSize: 8,
+    color: "#5a7184",
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  investmentValue: {
+    fontSize: 24,
+    color: "#002d72",
+    fontWeight: "heavy",
+    letterSpacing: -1,
+    marginTop: 10,
+  },
+  investmentSub: {
+    fontSize: 8,
+    color: "#94a3b8",
+    marginTop: 5,
+  },
+  coverFooter: {
+    position: "absolute",
+    bottom: 50,
+    left: 50,
+    right: 50,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    paddingTop: 15,
+  },
+  footerTextBold: {
+    fontSize: 9,
+    color: "#111827",
+    fontWeight: "bold",
+  },
+  footerTextLight: {
+    fontSize: 8,
+    color: "#94a3b8",
+    marginTop: 2,
+  },
+  stampBox: {
+    width: 35,
+    height: 35,
+    backgroundColor: "#94a3b8",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  stampText: {
+    color: "#fff",
+    fontSize: 6,
+    fontWeight: "bold",
+  },
+  // The rest from original PDF
   sectionTitle: {
     fontSize: 24,
     color: MEDICUS_COLORS.primary,
     marginBottom: 20,
-    borderBottom: 2,
+    borderBottomWidth: 2,
     borderBottomColor: MEDICUS_COLORS.primary,
     paddingBottom: 5,
     fontWeight: "bold",
@@ -98,7 +207,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: MEDICUS_COLORS.accent,
     borderRadius: 20,
-    border: 1,
+    borderWidth: 1,
     borderColor: MEDICUS_COLORS.border,
   },
   benefitTitle: {
@@ -149,7 +258,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 40,
     right: 40,
-    borderTop: 1,
+    borderTopWidth: 1,
     borderTopColor: MEDICUS_COLORS.border,
     paddingTop: 10,
     textAlign: "center",
@@ -161,15 +270,60 @@ const styles = StyleSheet.create({
 const ProposalPDF = ({ data }: { data: ProposalData }) => {
   return (
     <Document>
-      {/* P1: COVER */}
+      {/* P1: COVER (REDESIGNED TO MATCH MOCKUP EXACTLY) */}
       <Page size="A4" style={styles.coverPage}>
-        <View style={styles.logoPlaceholder}>
-          <Text style={styles.logoText}>MEDICUS</Text>
+        
+        <View style={styles.topBar}>
+          <View style={styles.logoBlock}>
+            <Text style={styles.logoText}>MEDICUS</Text>
+            <View style={styles.logoLine} />
+          </View>
+          <View style={styles.topRightText}>
+            <Text style={styles.refLabel}>PROPUESTA CORPORATIVA</Text>
+            <Text style={styles.refValue}>Ref: 2026-B2B-8832</Text>
+          </View>
         </View>
-        <Text style={styles.coverTitle}>PROPUESTA CORPORATIVA</Text>
-        <Text style={styles.coverSubtitle}>{data.clientName}</Text>
-        <View style={{ marginTop: 50 }}>
-          <Text style={styles.coverSubtitle}>{data.date}</Text>
+
+        <View style={styles.heroSection}>
+          <Text style={styles.heroPreTitle}>Propuesta para</Text>
+          <Text style={styles.heroTitle}>{data.clientName}</Text>
+          
+          <Text style={styles.heroSubtitle}>
+            Presentación comercial exclusiva detallando beneficios, red de prestadores y cobertura médica integral para su equipo de trabajo.
+          </Text>
+        </View>
+
+        <View style={styles.dataGrid}>
+          <View style={styles.dataColLeft}>
+             <Text style={styles.dataLabel}>PLAN SELECCIONADO</Text>
+             <Text style={styles.dataValueMain}>
+                {data.plans.length > 0 ? data.plans.join(" + ") : "Sin Selección"}
+             </Text>
+             <Text style={styles.dataValueSub}>Categoría Corporativa VIP - {data.capitas} Cápitas</Text>
+
+             <View style={{ marginTop: 30 }}>
+                <Text style={styles.dataLabel}>VIGENCIA</Text>
+                <Text style={styles.dataValueMain}>{data.date || "Inmediata"}</Text>
+             </View>
+          </View>
+          
+          <View style={styles.dataColRight}>
+             <View style={styles.investmentCard}>
+               <Text style={styles.investmentLabel}>INVERSIÓN MENSUAL</Text>
+               <Text style={styles.investmentValue}>S/Detalle</Text>
+               <Text style={styles.investmentSub}>Sujeto a cantidad de cápitas final</Text>
+             </View>
+          </View>
+        </View>
+
+        <View style={styles.coverFooter}>
+          <View>
+            <Text style={styles.footerTextBold}>Medicus S.A. de Asistencia Médica</Text>
+            <Text style={styles.footerTextLight}>Azcuénaga 910, CABA | www.medicus.com.ar</Text>
+          </View>
+          <View style={styles.stampBox}>
+            <Text style={styles.stampText}>SELLO</Text>
+          </View>
         </View>
       </Page>
 
@@ -208,28 +362,46 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
         <Text style={styles.pageHeader}>Análisis de Planes</Text>
         <Text style={styles.sectionTitle}>Beneficios Detallados</Text>
 
-        {data.plans.includes("Family R") && (
+        {data.plans.includes("Integra") && (
           <View style={styles.benefitBlock}>
-            <Text style={styles.benefitTitle}>Family R (vs 210 Osde)</Text>
+            <Text style={styles.benefitTitle}>Integra</Text>
+            <Text style={styles.text}>• 40% Dto Farmacias, Consultas médicas incluidas.</Text>
+            <Text style={styles.text}>• Cobertura ágil en sanatorios de cartilla.</Text>
+            <Text style={styles.text}>• Odontología general y preventiva.</Text>
+          </View>
+        )}
+
+        {data.plans.includes("Family") && (
+          <View style={styles.benefitBlock}>
+            <Text style={styles.benefitTitle}>Family (vs 210 Osde)</Text>
             <Text style={styles.text}>• 60% Dto Farmacias, Pax Assistance, Medico a Domicilio.</Text>
             <Text style={styles.text}>• Mejoras en Reintegros, Odontología (Implantes/Ortodoncia).</Text>
             <Text style={styles.text}>• Fuera de cartilla, Psicología, Óptica (1 par monofocal/bifocal).</Text>
           </View>
         )}
 
-        {data.plans.includes("Celeste 6") && (
+        {data.plans.includes("Conecta") && (
           <View style={styles.benefitBlock}>
-            <Text style={styles.benefitTitle}>Celeste 6 (vs 310/410 Osde)</Text>
-            <Text style={styles.text}>• Todo lo de Family R.</Text>
+            <Text style={styles.benefitTitle}>Conecta</Text>
+            <Text style={styles.text}>• Beneficios del plan Family optimizados.</Text>
+            <Text style={styles.text}>• Ortodoncia sin límite de edad y mayores topes.</Text>
+            <Text style={styles.text}>• Telemedicina 24/7 de alta prioridad.</Text>
+          </View>
+        )}
+
+        {data.plans.includes("Celeste") && (
+          <View style={styles.benefitBlock}>
+            <Text style={styles.benefitTitle}>Celeste (vs 310/410 Osde)</Text>
+            <Text style={styles.text}>• Todo lo de los planes anteriores.</Text>
             <Text style={styles.text}>• Módulo Mujer (estudios/estética) + Check Up anual.</Text>
           </View>
         )}
 
-        {data.plans.includes("Azul 4") && (
+        {data.plans.includes("Azul") && (
           <View style={styles.benefitBlock}>
-            <Text style={styles.benefitTitle}>Azul 4 (vs 450/510 Osde)</Text>
-            <Text style={styles.text}>• Todo lo de Celeste 6.</Text>
-            <Text style={styles.text}>• CONCIERGE Sanatorio Otamendi.</Text>
+            <Text style={styles.benefitTitle}>Azul (vs 450/510 Osde)</Text>
+            <Text style={styles.text}>• Todo lo de Celeste.</Text>
+            <Text style={styles.text}>• CONCIERGE Sanatorio Otamendi y prestadores VIP.</Text>
           </View>
         )}
         <Text style={styles.footer}>Página 4 de 7</Text>
@@ -311,7 +483,7 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
         <Text style={styles.text}>
           4. Salud Mental: 30 sesiones anuales por beneficiario cubiertas al 100%.
         </Text>
-        <View style={{ marginTop: 50, borderTop: 1, borderColor: MEDICUS_COLORS.primary, paddingTop: 20 }}>
+        <View style={{ marginTop: 50, borderTopWidth: 1, borderTopColor: MEDICUS_COLORS.primary, paddingTop: 20 }}>
           <Text style={styles.text}>Firma Medicus Corporativo</Text>
           <Text style={styles.text}>Gerencia Comercial B2B</Text>
         </View>
