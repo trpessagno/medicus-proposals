@@ -9,6 +9,8 @@ export interface PricingRow {
 export type PlanType = "Integra" | "Family" | "Conecta" | "Azul" | "Celeste";
 
 export interface ProposalData {
+  id?: string;
+  updated_at?: string;
   clientName: string;
   cuit: string;
   capitas: string;

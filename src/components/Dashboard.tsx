@@ -1,8 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { Download, FileText, Settings, User } from "lucide-react";
+import { Download, FileText, Settings, User, Save, Plus, History, Trash2, Search, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MOCK_DATA } from "../lib/constants";
 import { ProposalData, PlanType, PricingRow } from "../lib/types";
 import ProposalPDF from "./ProposalPDF";
+import { api } from "../lib/api";
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -32,11 +29,17 @@ const PLAN_DESCRIPTIONS: Record<PlanType, string> = {
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "planes">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "planes" | "historial">("dashboard");
   const [data, setData] = useState<ProposalData>(MOCK_DATA);
   const [debouncedData, setDebouncedData] = useState<ProposalData>(MOCK_DATA);
+  const [saving, setSaving] = useState(false);
+  const [proposals, setProposals] = useState<ProposalData[]>([]);
+  const [loadingProposals, setLoadingProposals] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true);
+    loadProposals();
+  }, []);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -71,6 +74,45 @@ export default function Dashboard() {
     });
   };
 
+  const loadProposals = async () => {
+    setLoadingProposals(true);
+    const { data: list, error } = await api.getProposals();
+    if (!error) setProposals(list);
+    setLoadingProposals(false);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const { data: saved, error } = await api.saveProposal(data);
+    if (!error && saved) {
+      setData(saved);
+      loadProposals();
+      alert("Propuesta guardada correctamente.");
+    } else {
+      alert("Error al guardar la propuesta.");
+      console.error(error);
+    }
+    setSaving(false);
+  };
+
+  const handleNew = () => {
+    if (confirm("¿Estás seguro de crear una nueva propuesta? Se perderán los cambios no guardados.")) {
+      setData(MOCK_DATA);
+    }
+  };
+
+  const loadProposalToEdit = (prop: ProposalData) => {
+    setData(prop);
+    setActiveTab("dashboard");
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm("¿Eliminar esta propuesta permanentemente?")) {
+      const { error } = await api.deleteProposal(id);
+      if (!error) loadProposals();
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#f4f7f9] font-sans">
       {/* NAVBAR */}
@@ -89,6 +131,12 @@ export default function Dashboard() {
               className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "planes" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
             >
               Planes
+            </button>
+            <button 
+              onClick={() => setActiveTab("historial")}
+              className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "historial" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            >
+              Historial
             </button>
           </div>
         </div>
@@ -200,17 +248,37 @@ export default function Dashboard() {
             </div>
 
             {mounted ? (
-              <PDFDownloadLink
-                document={<ProposalPDF data={debouncedData} />}
-                fileName={`Propuesta_Medicus_${data.clientName.replace(/\s+/g, '_')}.pdf`}
-                className="w-full mt-4"
-              >
-                {({ loading }) => (
-                  <Button className="w-full bg-[#002d72] hover:bg-[#001f4f] text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 transition-transform active:scale-[0.98]">
-                    <FileText className="w-5 h-5 ml-2" /> {loading ? "Generando Documento..." : "Descargar Propuesta PDF"}
+              <div className="space-y-3 mt-4">
+                <Button 
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full bg-[#0260f9] hover:bg-[#0140a8] text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-lg shadow-blue-500/20 transition-all"
+                >
+                  <Save className="w-5 h-5 ml-2" /> {saving ? "Guardando..." : data.id ? "Actualizar Propuesta" : "Guardar Propuesta"}
+                </Button>
+                
+                <PDFDownloadLink
+                  document={<ProposalPDF data={debouncedData} />}
+                  fileName={`Propuesta_Medicus_${data.clientName.replace(/\s+/g, '_')}.pdf`}
+                  className="w-full block"
+                >
+                  {({ loading }) => (
+                    <Button className="w-full bg-[#002d72] hover:bg-[#001f4f] text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 transition-transform active:scale-[0.98]">
+                      <FileText className="w-5 h-5 ml-2" /> {loading ? "Generando Documento..." : "Descargar Propuesta PDF"}
+                    </Button>
+                  )}
+                </PDFDownloadLink>
+
+                {data.id && (
+                   <Button 
+                    onClick={handleNew}
+                    variant="outline"
+                    className="w-full border-slate-200 text-slate-600 h-[50px] rounded-xl flex gap-2 font-bold text-[14px] hover:bg-slate-50"
+                  >
+                    <Plus className="w-4 h-4 ml-2" /> Nueva Cotización
                   </Button>
                 )}
-              </PDFDownloadLink>
+              </div>
             ) : (
               <Button disabled className="w-full bg-[#002d72]/50 text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 mt-4">
                 <FileText className="w-5 h-5 ml-2" /> Cargando...
@@ -229,6 +297,78 @@ export default function Dashboard() {
                  <div className="text-slate-400 italic flex items-center justify-center h-full">Inicializando visor...</div>
                )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "historial" && (
+        <div className="flex-1 p-12 bg-white overflow-y-auto">
+          <div className="max-w-6xl mx-auto space-y-8">
+             <div className="flex justify-between items-end">
+               <div>
+                 <h2 className="text-[#002d72] text-4xl font-black mb-3 tracking-tight">Historial de Propuestas</h2>
+                 <p className="text-slate-500 text-base font-medium">Gestione, edite o elimine propuestas generadas previamente.</p>
+               </div>
+               <Button onClick={loadProposals} variant="ghost" className="text-slate-400 hover:text-[#0260f9]">
+                 <RotateCcw className={`w-5 h-5 ${loadingProposals ? "animate-spin" : ""}`} />
+               </Button>
+             </div>
+
+             <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+               <Table>
+                 <TableHeader className="bg-slate-50/50">
+                   <TableRow className="hover:bg-transparent border-b border-slate-200 text-slate-500">
+                     <TableHead className="text-xs font-black tracking-widest uppercase px-8 py-5">Cliente</TableHead>
+                     <TableHead className="text-xs font-black tracking-widest uppercase py-5">CUIT</TableHead>
+                     <TableHead className="text-xs font-black tracking-widest uppercase py-5">Cápitas</TableHead>
+                     <TableHead className="text-xs font-black tracking-widest uppercase py-5">Fecha App</TableHead>
+                     <TableHead className="text-xs font-black tracking-widest uppercase py-5">Última Modif.</TableHead>
+                     <TableHead className="text-xs font-black tracking-widest uppercase text-right py-5 pr-8">Acciones</TableHead>
+                   </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                   {proposals.length === 0 ? (
+                     <TableRow>
+                       <TableCell colSpan={6} className="h-40 text-center text-slate-400 italic">
+                         No hay propuestas guardadas todavía.
+                       </TableCell>
+                     </TableRow>
+                   ) : (
+                     proposals.map((prop) => (
+                       <TableRow key={prop.id} className="border-b border-slate-100 hover:bg-slate-50/80 transition-colors">
+                         <TableCell className="font-extrabold text-[15px] text-[#002d72] px-8 tracking-tight">{prop.clientName || "Sin Nombre"}</TableCell>
+                         <TableCell className="text-sm font-medium text-slate-600">{prop.cuit || "-"}</TableCell>
+                         <TableCell className="text-sm font-medium text-slate-600">{prop.capitas || "-"}</TableCell>
+                         <TableCell className="text-sm font-medium text-slate-600">{prop.date || "-"}</TableCell>
+                         <TableCell className="text-sm font-medium text-slate-400">
+                           {prop.updated_at ? new Date(prop.updated_at).toLocaleDateString() : "-"}
+                         </TableCell>
+                         <TableCell className="text-right pr-8">
+                           <div className="flex justify-end gap-2">
+                             <Button 
+                               onClick={() => loadProposalToEdit(prop)}
+                               variant="outline" 
+                               size="sm" 
+                               className="border-slate-200 text-[#0260f9] hover:bg-blue-50 font-bold"
+                             >
+                               Editar
+                             </Button>
+                             <Button 
+                               onClick={() => handleDelete(prop.id!)}
+                               variant="ghost" 
+                               size="sm" 
+                               className="text-slate-300 hover:text-red-500 hover:bg-red-50"
+                             >
+                               <Trash2 className="w-4 h-4" />
+                             </Button>
+                           </div>
+                         </TableCell>
+                       </TableRow>
+                     ))
+                   )}
+                 </TableBody>
+               </Table>
+             </div>
           </div>
         </div>
       )}
