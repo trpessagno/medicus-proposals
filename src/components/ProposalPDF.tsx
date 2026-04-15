@@ -309,9 +309,23 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
           
           <View style={styles.dataColRight}>
              <View style={styles.investmentCard}>
-               <Text style={styles.investmentLabel}>INVERSIÓN MENSUAL</Text>
-               <Text style={styles.investmentValue}>S/Detalle</Text>
-               <Text style={styles.investmentSub}>Sujeto a cantidad de cápitas final</Text>
+               <Text style={styles.investmentLabel}>INVERSIÓN MENSUAL EST.</Text>
+               <Text style={styles.investmentValue}>
+                 {(() => {
+                    if (!data.plans.length || !data.capitas) return "S/Detalle";
+                    // Tomamos el primer plan seleccionado como referencia para el monto principal
+                    const firstPlan = data.plans[0].toUpperCase();
+                    const pricing = data.pricingIndividual.find(p => p.plan.toUpperCase() === firstPlan);
+                    if (!pricing) return "S/Detalle";
+                    
+                    const capitasNum = parseInt(data.capitas.replace(/\./g, '')) || 0;
+                    const priceNum = parseFloat(pricing.age27_35.replace(/\./g, '').replace(/,/g, '.')) || 0;
+                    const total = capitasNum * priceNum;
+                    
+                    return total > 0 ? `$${total.toLocaleString('es-AR')}` : "S/Detalle";
+                 })()}
+               </Text>
+               <Text style={styles.investmentSub}>Estimado base (franja 27-35 años)</Text>
              </View>
           </View>
         </View>
