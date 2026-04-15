@@ -1,4 +1,8 @@
-import { Download, FileText, Settings, User, Save, Plus, History, Trash2, Search, RotateCcw } from "lucide-react";
+"use client";
+
+import React, { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
+import { FileText, Settings, User, Save, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,10 +40,18 @@ export default function Dashboard() {
   const [proposals, setProposals] = useState<ProposalData[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
 
+  const loadProposals = useCallback(async () => {
+    setLoadingProposals(true);
+    const { data: list, error } = await api.getProposals();
+    if (!error) setProposals(list);
+    setLoadingProposals(false);
+  }, []);
+
   useEffect(() => { 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     loadProposals();
-  }, []);
+  }, [loadProposals]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -74,12 +86,6 @@ export default function Dashboard() {
     });
   };
 
-  const loadProposals = async () => {
-    setLoadingProposals(true);
-    const { data: list, error } = await api.getProposals();
-    if (!error) setProposals(list);
-    setLoadingProposals(false);
-  };
 
   const handleSave = async () => {
     setSaving(true);

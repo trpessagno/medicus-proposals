@@ -5,7 +5,7 @@ export const api = {
   /**
    * Guarda una propuesta. Si tiene ID, la actualiza; si no, crea una nueva.
    */
-  async saveProposal(data: ProposalData): Promise<{ data: ProposalData | null; error: any }> {
+  async saveProposal(data: ProposalData): Promise<{ data: ProposalData | null; error: unknown }> {
     const payload = {
       client_name: data.clientName,
       cuit: data.cuit,
@@ -41,7 +41,7 @@ export const api = {
   /**
    * Obtiene todas las propuestas ordenadas por fecha de actualización.
    */
-  async getProposals(): Promise<{ data: ProposalData[]; error: any }> {
+  async getProposals(): Promise<{ data: ProposalData[]; error: unknown }> {
     const { data, error } = await supabase
       .from("proposals")
       .select("*")
@@ -56,7 +56,7 @@ export const api = {
   /**
    * Elimina una propuesta por ID.
    */
-  async deleteProposal(id: string): Promise<{ error: any }> {
+  async deleteProposal(id: string): Promise<{ error: unknown }> {
     const { error } = await supabase
       .from("proposals")
       .delete()
@@ -67,18 +67,19 @@ export const api = {
   /**
    * Mapea un registro de la base de datos (snake_case) al objeto de la app (camelCase).
    */
-  mapFromDb(dbRow: any): ProposalData {
+  mapFromDb(dbRow: unknown): ProposalData {
+    const row = dbRow as Record<string, unknown>;
     return {
-      id: dbRow.id,
-      updated_at: dbRow.updated_at,
-      clientName: dbRow.client_name,
-      cuit: dbRow.cuit,
-      capitas: dbRow.capitas,
-      date: dbRow.date,
-      currentCompetition: dbRow.current_competition,
-      plans: dbRow.plans || [],
-      pricingIndividual: dbRow.pricing_individual || [],
-      pricingMatrimonio: dbRow.pricing_matrimonio || [],
+      id: row.id as string,
+      updated_at: row.updated_at as string,
+      clientName: row.client_name as string,
+      cuit: row.cuit as string,
+      capitas: row.capitas as string,
+      date: row.date as string,
+      currentCompetition: row.current_competition as string,
+      plans: (row.plans as PlanType[]) || [],
+      pricingIndividual: (row.pricing_individual as PricingRow[]) || [],
+      pricingMatrimonio: (row.pricing_matrimonio as PricingRow[]) || [],
     };
   }
 };
