@@ -14,6 +14,10 @@ export const supabase = (() => {
     return supabaseInstance;
   }
   
-  // En el servidor (build time), retornamos un proxy vacío para evitar errores de acceso
   return {} as SupabaseClient;
 })();
+
+export const isSupabaseConfigured = 
+  typeof window !== "undefined" && 
+  process.env.NEXT_PUBLIC_SUPABASE_URL && 
+  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder");

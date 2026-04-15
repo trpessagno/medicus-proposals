@@ -20,7 +20,8 @@ export const MOCK_DATA: ProposalData = {
     { plan: "CONECTA", age0_26: "220.000", age27_35: "270.000", age36_44: "400.000", age45_64: "470.000" },
     { plan: "AZUL", age0_26: "292.300", age27_35: "364.700", age36_44: "557.100", age45_64: "637.500" },
     { plan: "CELESTE", age0_26: "242.100", age27_35: "302.400", age36_44: "460.800", age45_64: "528.200" }
-  ]
+  ],
+  selectedBenefits: []
 };
 
 export const MEDICUS_COLORS = {

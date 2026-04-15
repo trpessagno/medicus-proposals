@@ -10,6 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import { ProposalData } from "../lib/types";
 import { MEDICUS_COLORS } from "../lib/constants";
+import { getSelectedBenefitsGrouped } from "../data/beneficios";
 
 const styles = StyleSheet.create({
   page: {
@@ -432,7 +433,35 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
             Vigencia: {data.date}
           </Text>
         </View>
-        <Text style={styles.footer}>Página 5 de 7</Text>
+        <Text style={styles.footer}>Página 5 de 8</Text>
+      </Page>
+
+      {/* P6: INSTITUTIONAL BENEFITS (DYNAMIC) */}
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.pageHeader}>Beneficios Institucionales Corporativos</Text>
+        <Text style={styles.sectionTitle}>Cobertura Integral</Text>
+        
+        {getSelectedBenefitsGrouped(data.selectedBenefits).length > 0 ? (
+          getSelectedBenefitsGrouped(data.selectedBenefits).map((cat) => (
+            <View key={cat.id} style={styles.benefitBlock}>
+              <Text style={styles.benefitTitle}>{cat.titulo}</Text>
+              {cat.beneficios.map((b) => (
+                <Text key={b.id} style={styles.text}>
+                   <Text style={{ color: MEDICUS_COLORS.primary, fontWeight: "bold" }}>• </Text>
+                   {b.text}
+                </Text>
+              ))}
+            </View>
+          ))
+        ) : (
+          <View style={[styles.benefitBlock, { alignItems: "center", justifyContent: "center", height: 200, borderStyle: "dashed" }]}>
+            <Text style={[styles.text, { italic: true, color: "#94a3b8" }]}>
+              No se han seleccionado beneficios institucionales específicos para esta propuesta.
+            </Text>
+          </View>
+        )}
+        
+        <Text style={styles.footer}>Página 6 de 8</Text>
       </Page>
 
       {/* P6: PRICING TABLES */}
@@ -478,10 +507,10 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
             </View>
           ))}
         </View>
-        <Text style={styles.footer}>Página 6 de 7</Text>
+        <Text style={styles.footer}>Página 7 de 8</Text>
       </Page>
 
-      {/* P7: LEGAL */}
+      {/* P8: LEGAL */}
       <Page size="A4" style={styles.page}>
         <Text style={styles.pageHeader}>Condiciones Legales</Text>
         <Text style={styles.sectionTitle}>Consideraciones Generales</Text>
@@ -501,7 +530,7 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
           <Text style={styles.text}>Firma Medicus Corporativo</Text>
           <Text style={styles.text}>Gerencia Comercial B2B</Text>
         </View>
-        <Text style={styles.footer}>Página 7 de 7</Text>
+        <Text style={styles.footer}>Página 8 de 8</Text>
       </Page>
     </Document>
   );

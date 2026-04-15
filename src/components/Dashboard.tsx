@@ -12,6 +12,7 @@ import { MOCK_DATA } from "../lib/constants";
 import { ProposalData, PlanType, PricingRow } from "../lib/types";
 import ProposalPDF from "./ProposalPDF";
 import { api } from "../lib/api";
+import BeneficiosSelector from "./BeneficiosSelector";
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -33,7 +34,7 @@ const PLAN_DESCRIPTIONS: Record<PlanType, string> = {
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "planes" | "historial">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "planes" | "beneficios" | "historial">("dashboard");
   const [data, setData] = useState<ProposalData>(MOCK_DATA);
   const [debouncedData, setDebouncedData] = useState<ProposalData>(MOCK_DATA);
   const [saving, setSaving] = useState(false);
@@ -144,7 +145,13 @@ export default function Dashboard() {
               onClick={() => setActiveTab("planes")}
               className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "planes" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
             >
-              Planes
+              Precios
+            </button>
+            <button 
+              onClick={() => setActiveTab("beneficios")}
+              className={`text-sm font-bold uppercase tracking-widest flex items-center h-full border-b-[3px] transition-colors ${activeTab === "beneficios" ? "border-[#0260f9] text-[#002d72]" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+            >
+              Beneficios
             </button>
             <button 
               onClick={() => setActiveTab("historial")}
@@ -154,7 +161,20 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          {mounted && (
+            <PDFDownloadLink
+              document={<ProposalPDF data={debouncedData} />}
+              fileName={`Propuesta_Medicus_${data.clientName.replace(/\s+/g, '_')}.pdf`}
+            >
+              {({ loading }) => (
+                <Button className="bg-[#002d72] hover:bg-[#001f4f] text-white h-10 px-6 rounded-lg flex gap-2 font-bold text-[13px] shadow-sm transition-all active:scale-[0.98]">
+                  <FileText className="w-4 h-4" /> {loading ? "Generando..." : "Descargar PDF"}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          )}
+          <div className="h-6 w-px bg-slate-200 mx-2" />
           <Settings className="w-5 h-5 text-slate-400 cursor-pointer hover:text-slate-600 transition-colors" />
           <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center overflow-hidden cursor-pointer shadow-md">
             <User className="w-5 h-5 text-white/80 mt-1" />
@@ -270,18 +290,6 @@ export default function Dashboard() {
                 >
                   <Save className="w-5 h-5 ml-2" /> {saving ? "Guardando..." : data.id ? "Actualizar Propuesta" : "Guardar Propuesta"}
                 </Button>
-                
-                <PDFDownloadLink
-                  document={<ProposalPDF data={debouncedData} />}
-                  fileName={`Propuesta_Medicus_${data.clientName.replace(/\s+/g, '_')}.pdf`}
-                  className="w-full block"
-                >
-                  {({ loading }) => (
-                    <Button className="w-full bg-[#002d72] hover:bg-[#001f4f] text-white h-[56px] rounded-xl flex gap-2 font-black text-[15px] shadow-xl shrink-0 transition-transform active:scale-[0.98]">
-                      <FileText className="w-5 h-5 ml-2" /> {loading ? "Generando Documento..." : "Descargar Propuesta PDF"}
-                    </Button>
-                  )}
-                </PDFDownloadLink>
 
                 {data.id && (
                    <Button 
@@ -417,7 +425,18 @@ export default function Dashboard() {
                     />
                   </div>
                 </TabsContent>
-             </Tabs>
+              </Tabs>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "beneficios" && (
+        <div className="flex-1 p-12 bg-white overflow-y-auto animate-in fade-in duration-300">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <BeneficiosSelector 
+              selectedIds={data.selectedBenefits}
+              onChange={(ids) => setData(prev => ({ ...prev, selectedBenefits: ids }))}
+            />
           </div>
         </div>
       )}

@@ -19,4 +19,5 @@ export interface ProposalData {
   plans: PlanType[];
   pricingIndividual: PricingRow[];
   pricingMatrimonio: PricingRow[];
+  selectedBenefits: string[];
 }
