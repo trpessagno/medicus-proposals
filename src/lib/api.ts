@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import { ProposalData } from "./types";
+import { ProposalData, PlanType, PricingRow } from "./types";
 
 export const api = {
   /**
