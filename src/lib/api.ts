@@ -1,3 +1,4 @@
+/** v1.0.1 - Persistencia de propuestas con Supabase */
 import { supabase } from "./supabase";
 import { ProposalData, PlanType, PricingRow } from "./types";
 
