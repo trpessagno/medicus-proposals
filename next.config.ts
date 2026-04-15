@@ -1,9 +1,5 @@
 import type { NextConfig } from "next";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { resolve } from "path";
 
 const nextConfig: NextConfig = {
   transpilePackages: [
@@ -21,11 +17,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Force browser builds of @react-pdf packages
+      // Force browser builds of @react-pdf packages to avoid ESM default export errors
       config.resolve.alias = {
         ...config.resolve.alias,
         "@react-pdf/pdfkit": resolve(
-          __dirname,
+          process.cwd(),
           "node_modules/@react-pdf/pdfkit/lib/pdfkit.browser.js"
         ),
       };
