@@ -60,6 +60,14 @@ export default function Dashboard() {
     return () => clearTimeout(handler);
   }, [data]);
 
+  if (!mounted) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white text-[#002d72] font-black text-xl italic animate-pulse">
+        Iniciando Medicus Dashboard...
+      </div>
+    );
+  }
+
   const updateClientInfo = (field: keyof ProposalData, value: string) => {
     setData((prev) => ({ ...prev, [field]: value }));
   };

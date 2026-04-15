@@ -1,15 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+let supabaseInstance: SupabaseClient | null = null;
 
-// Usamos valores placeholder si faltan las keys para evitar que createClient explote en tiempo de build
-// pero logueamos un error para que sea visible en la consola de Vercel.
-const safeUrl = supabaseUrl || "https://placeholder.supabase.co";
-const safeKey = supabaseAnonKey || "placeholder-key";
+export const supabase = (() => {
+  if (typeof window === "undefined" && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    // Retornamos un objeto dummy durante el build del servidor si no hay keys
+    return {} as SupabaseClient;
+  }
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("❌ CRÍTICO: Faltan las credenciales de Supabase en las variables de entorno.");
-}
-
-export const supabase = createClient(safeUrl, safeKey);
+  if (!supabaseInstance) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
+    
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  }
+  
+  return supabaseInstance;
+})();
