@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   ],
   output: 'standalone',
   webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /[\\/]node_modules[\\/]@react-pdf[\\/]/,
+      type: "javascript/auto",
+    });
+
     if (!isServer) {
       // Force browser builds of @react-pdf packages
       config.resolve.alias = {
