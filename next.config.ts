@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
-import { resolve } from "path";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 
 const nextConfig: NextConfig = {
   transpilePackages: [
@@ -17,13 +19,10 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Force browser builds of @react-pdf packages to avoid ESM default export errors
+      // Force browser builds of @react-pdf packages
       config.resolve.alias = {
         ...config.resolve.alias,
-        "@react-pdf/pdfkit": resolve(
-          process.cwd(),
-          "node_modules/@react-pdf/pdfkit/lib/pdfkit.browser.js"
-        ),
+        "@react-pdf/pdfkit": require.resolve("@react-pdf/pdfkit/lib/pdfkit.browser.js"),
       };
     }
     return config;
