@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { FileText, Settings, User, Save, Plus, Trash2 } from "lucide-react";
+import { FileText, Settings, User, Save, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
