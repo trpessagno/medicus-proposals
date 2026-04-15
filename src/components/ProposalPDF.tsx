@@ -455,7 +455,7 @@ const ProposalPDF = ({ data }: { data: ProposalData }) => {
           ))
         ) : (
           <View style={[styles.benefitBlock, { alignItems: "center", justifyContent: "center", height: 200, borderStyle: "dashed" }]}>
-            <Text style={[styles.text, { italic: true, color: "#94a3b8" }]}>
+            <Text style={[styles.text, { fontStyle: "italic", color: "#94a3b8" }]}>
               No se han seleccionado beneficios institucionales específicos para esta propuesta.
             </Text>
           </View>
